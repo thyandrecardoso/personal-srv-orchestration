@@ -25,7 +25,11 @@ services:
     restart: always
     volumes:
       - nextcloud:/var/www/html
-      - ${DATA_VOLUME_BASE_PATH}/nextcloud:/var/www/html/data
+      - ${DATA_VOLUME_BASE_PATH}/nextcloud/config:/var/www/html/config
+      - ${DATA_VOLUME_BASE_PATH}/nextcloud/custom_apps:/var/www/html/custom_apps
+      - ${DATA_VOLUME_BASE_PATH}/nextcloud/data:/var/www/html/data
+      - ${DATA_VOLUME_BASE_PATH}/nextcloud/themes:/var/www/html/themes
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - POSTGRES_HOST=postgres
       - POSTGRES_DB=nextcloud
