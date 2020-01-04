@@ -1,0 +1,197 @@
+version: '3'
+
+services:
+
+  # a DB server; the underlying DB for NextCloud
+  postgres:
+    image: arm64v8/postgres:alpine
+    container_name: postgres
+    restart: always
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/postgres:/var/lib/postgresql/data
+    env_file:
+      - postgres.env
+
+  # a key value store; acts as cache for NextCloud
+  redis:
+    image: arm64v8/redis:alpine
+    container_name: redis
+    restart: always
+
+  # a Dropbox alternative, self-hosted
+  nextcloud:
+    image: nextcloud:fpm-alpine
+    container_name: nextcloud
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+      - ${DATA_VOLUME_BASE_PATH}/nextcloud:/var/www/html/data
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=nextcloud
+      - REDIS_HOST=redis
+    env_file:
+      - postgres.env
+    depends_on:
+      - postgres
+      - redis
+
+  # the actual php server for NextCloud
+  nginx-nextcloud-fpm-front:
+    build: ./nginx-fpm-front
+    container_name: nginx-nextcloud-fpm-front
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html:ro
+    env_file:
+      - nginx-nextcloud-fpm-front.env
+    depends_on:
+      - nextcloud
+    networks:
+      - proxy-tier
+      - default
+
+  # torrent client
+  transmission:
+    image: linuxserver/transmission:arm64v8-latest
+    container_name: transmission
+    restart: always
+    environment:
+      - TZ=Europe/London
+      - PUID=0
+      - PGID=0
+    env_file:
+      - transmission.env
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/config:/config
+      - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/downloads:/downloads
+      - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/watch:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    networks:
+      - proxy-tier
+      - default
+
+  # tracker sites proxy for the other two below
+  jackett:
+    image: linuxserver/jackett:arm64v8-latest
+    container_name: jackett
+    restart: always
+    env_file:
+      - jackett.env
+    ports:
+      - 9117:9117
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/jackett/config:/config
+      - ${DATA_VOLUME_BASE_PATH}/media_services/jackett/downloads:/downloads
+    networks:
+      - proxy-tier
+      - default
+
+  # to look for TV series
+  sonarr:
+    image: linuxserver/sonarr:arm64v8-latest
+    container_name: sonarr
+    restart: always
+    environment:
+      - TZ=Europe/London
+      - PUID=0
+      - PGID=0
+    env_file:
+      - sonarr.env
+    ports:
+      - 8989:8989
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/series:/tv
+      - ${DATA_VOLUME_BASE_PATH}/media_services/sonarr/config:/config
+      - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/downloads:/downloads
+    networks:
+      - proxy-tier
+      - default
+
+  # to look for movies
+  radarr:
+    image: linuxserver/radarr:arm64v8-latest
+    container_name: radarr
+    restart: always
+    environment:
+      - TZ=Europe/London
+      - PUID=0
+      - PGID=0
+    env_file:
+      - radarr.env
+    ports:
+      - 7878:7878
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/movies:/movies
+      - ${DATA_VOLUME_BASE_PATH}/media_services/radarr/config:/config
+      - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/downloads:/downloads
+    networks:
+      - proxy-tier
+      - default
+
+  # a build dependency for the actual nginx-proxy running bellow. This only triggers the image build...
+  nginx-proxy-arm:
+    build:
+      context: ./nginx-proxy
+      dockerfile: Dockerfile.arm
+    restart: "no"
+    container_name: nginx-proxy-arm
+    command: "sh -c exit" # ... just exit the running container. We're using this only to trigger an image build...
+
+  # listens to changes on the docker server... if a new running container appears, with certain env vars set, it tries to generate a nginx proxy configuration so as to proxy a virtual host to the running container
+  custom-nginx-proxy:
+    build: ./custom-nginx-proxy
+    container_name: custom-nginx-proxy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+    volumes:
+      - certs:/etc/nginx/certs:ro
+      - vhost.d:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - proxy-tier
+    depends_on:
+      - nginx-proxy-arm
+
+  # listens to changes on the docker server... if a new running container appears, with certain env vars set, it tries to generate an SSL certificate for it.
+  docker-letsencrypt-nginx-proxy-companion:
+    build: docker-letsencrypt-nginx-proxy-companion
+    container_name: docker-letsencrypt-nginx-proxy-companion
+    restart: always
+    volumes:
+      - certs:/etc/nginx/certs
+      - vhost.d:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy-tier
+    depends_on:
+      - custom-nginx-proxy
+
+  # updates your no ip DNS. Useful when you want to use a CNAME for your actual DNS server records... E.g. sub.domain.com -> CNAME -> my.dynamic.noip.com
+  rpi-noip:
+    image: hypriot/rpi-noip
+    container_name: rpi-noip
+    restart: always
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/noip/config:/usr/local/etc # must supply a valid configuration file inside this folder, otherwise refer to the image on how to build one first.
+    networks:
+      - default
+
+volumes:
+  db:
+  nextcloud:
+  certs:
+  vhost.d:
+  html:
+
+networks:
+  proxy-tier:
