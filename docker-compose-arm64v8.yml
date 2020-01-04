@@ -6,7 +6,7 @@ services:
   postgres:
     image: arm64v8/postgres:alpine
     container_name: postgres
-    restart: always
+    restart: unless-stopped
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/postgres:/var/lib/postgresql/data
     env_file:
@@ -16,13 +16,13 @@ services:
   redis:
     image: arm64v8/redis:alpine
     container_name: redis
-    restart: always
+    restart: unless-stopped
 
   # a Dropbox alternative, self-hosted
   nextcloud:
     image: nextcloud:fpm-alpine
     container_name: nextcloud
-    restart: always
+    restart: unless-stopped
     volumes:
       - nextcloud:/var/www/html
       - ${DATA_VOLUME_BASE_PATH}/nextcloud/config:/var/www/html/config
@@ -44,7 +44,7 @@ services:
   nginx-nextcloud-fpm-front:
     build: ./nginx-fpm-front
     container_name: nginx-nextcloud-fpm-front
-    restart: always
+    restart: unless-stopped
     volumes:
       - nextcloud:/var/www/html:ro
     env_file:
@@ -59,7 +59,7 @@ services:
   transmission:
     image: linuxserver/transmission:arm64v8-latest
     container_name: transmission
-    restart: always
+    restart: unless-stopped
     environment:
       - TZ=Europe/London
       - PUID=0
@@ -82,7 +82,7 @@ services:
   jackett:
     image: linuxserver/jackett:arm64v8-latest
     container_name: jackett
-    restart: always
+    restart: unless-stopped
     env_file:
       - jackett.env
     ports:
@@ -98,7 +98,7 @@ services:
   sonarr:
     image: linuxserver/sonarr:arm64v8-latest
     container_name: sonarr
-    restart: always
+    restart: unless-stopped
     environment:
       - TZ=Europe/London
       - PUID=0
@@ -119,7 +119,7 @@ services:
   radarr:
     image: linuxserver/radarr:arm64v8-latest
     container_name: radarr
-    restart: always
+    restart: unless-stopped
     environment:
       - TZ=Europe/London
       - PUID=0
@@ -149,7 +149,7 @@ services:
   custom-nginx-proxy:
     build: ./custom-nginx-proxy
     container_name: custom-nginx-proxy
-    restart: always
+    restart: unless-stopped
     ports:
       - 80:80
       - 443:443
@@ -169,7 +169,7 @@ services:
   docker-letsencrypt-nginx-proxy-companion:
     build: docker-letsencrypt-nginx-proxy-companion
     container_name: docker-letsencrypt-nginx-proxy-companion
-    restart: always
+    restart: unless-stopped
     volumes:
       - certs:/etc/nginx/certs
       - vhost.d:/etc/nginx/vhost.d
@@ -184,7 +184,7 @@ services:
   rpi-noip:
     image: hypriot/rpi-noip
     container_name: rpi-noip
-    restart: always
+    restart: unless-stopped
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/noip/config:/usr/local/etc # must supply a valid configuration file inside this folder, otherwise refer to the image on how to build one first.
     networks:
