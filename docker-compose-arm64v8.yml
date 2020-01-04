@@ -47,6 +47,10 @@ services:
     restart: unless-stopped
     volumes:
       - nextcloud:/var/www/html:ro
+      - ${DATA_VOLUME_BASE_PATH}/nextcloud/config:/var/www/html/config:ro
+      - ${DATA_VOLUME_BASE_PATH}/nextcloud/custom_apps:/var/www/html/custom_apps:ro
+      - ${DATA_VOLUME_BASE_PATH}/nextcloud/data:/var/www/html/data:ro
+      - ${DATA_VOLUME_BASE_PATH}/nextcloud/themes:/var/www/html/themes:ro
     env_file:
       - nginx-nextcloud-fpm-front.env
     depends_on:
