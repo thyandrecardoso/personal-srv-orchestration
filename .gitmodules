@@ -1,3 +1,6 @@
 [submodule "nginx-proxy"]
 	path = nginx-proxy
 	url = https://github.com/belerophon/nginx-proxy.git
+[submodule "docker-letsencrypt-nginx-proxy-companion"]
+	path = docker-letsencrypt-nginx-proxy-companion
+	url = https://github.com/belerophon/docker-letsencrypt-nginx-proxy-companion.git
