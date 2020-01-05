@@ -134,6 +134,7 @@ services:
 
   # a build dependency for the actual nginx-proxy running bellow. This only triggers the image build...
   nginx-proxy-arm:
+    image: nginx-proxy-arm # setting this along with "build", makes the build process to tag the image with this name
     build:
       context: ./nginx-proxy
       dockerfile: Dockerfile.arm
