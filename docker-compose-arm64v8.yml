@@ -189,7 +189,7 @@ services:
 
   # for saving web-pages https://www.wallabag.org/en
   wallabag:
-    image: wallabag/wallabag
+    image: ugeek/wallabag:arm
     container_name: wallabag
     env_file:
       - wallabag.env
@@ -199,10 +199,16 @@ services:
       - SYMFONY__ENV__DATABASE_HOST=postgres
       - SYMFONY__ENV__DATABASE_PORT=5432
       - SYMFONY__ENV__DATABASE_NAME=wallabag
+      - SYMFONY__ENV__FOSUSER_REGISTRATION=false
     ports:
       - "80"
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/wallabag/images:/var/www/wallabag/web/assets/images
+    depends_on:
+      - postgres
+    networks:
+      - proxy-tier
+      - default
 
 volumes:
   certs:
