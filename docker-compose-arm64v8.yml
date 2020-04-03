@@ -4,7 +4,7 @@ services:
 
   # a DB server; the underlying DB for NextCloud
   postgres:
-    image: arm64v8/postgres:alpine
+    image: arm64v8/postgres:12.2-alpine
     container_name: postgres
     restart: unless-stopped
     volumes:
@@ -14,13 +14,13 @@ services:
 
   # a key value store; acts as cache for NextCloud
   redis:
-    image: arm64v8/redis:alpine
+    image: arm64v8/redis:5.0.8-alpine3.11
     container_name: redis
     restart: unless-stopped
 
   # a Dropbox alternative, self-hosted
   nextcloud:
-    image: nextcloud:fpm-alpine
+    image: nextcloud:18.0.3-fpm-alpine
     container_name: nextcloud
     restart: unless-stopped
     volumes:
@@ -38,7 +38,7 @@ services:
 
   # the actual php server for NextCloud
   nginx-nextcloud-fpm-front:
-    build: ./nginx-fpm-front
+    build: ./nginx-nextcloud-fpm-front
     container_name: nginx-nextcloud-fpm-front
     restart: unless-stopped
     volumes:
@@ -63,9 +63,8 @@ services:
     env_file:
       - transmission.env
     volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/downloads:/downloads
       - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/config:/config
-      - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/downloads:/downloads
-      - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/watch:/watch
     ports:
       - 9091:9091
       - 51413:51413
@@ -76,7 +75,7 @@ services:
 
   # tracker sites proxy for the other two below
   jackett:
-    image: linuxserver/jackett:arm64v8-latest
+    image: linuxserver/jackett:arm64v8-v0.14.396-ls60
     container_name: jackett
     restart: unless-stopped
     env_file:
@@ -92,7 +91,7 @@ services:
 
   # to look for TV series
   sonarr:
-    image: linuxserver/sonarr:arm64v8-latest
+    image: linuxserver/sonarr:arm64v8-2.0.0.5344-ls56
     container_name: sonarr
     restart: unless-stopped
     environment:
@@ -101,19 +100,21 @@ services:
       - PGID=0
     env_file:
       - sonarr.env
+    depends_on:
+      - jackett
+      - transmission
     ports:
       - 8989:8989
     volumes:
-      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/series:/tv
       - ${DATA_VOLUME_BASE_PATH}/media_services/sonarr/config:/config
-      - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/downloads:/downloads
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA
     networks:
       - proxy-tier
       - default
 
   # to look for movies
   radarr:
-    image: linuxserver/radarr:arm64v8-latest
+    image: linuxserver/radarr:arm64v8-0.2.0.1483-ls1
     container_name: radarr
     restart: unless-stopped
     environment:
@@ -122,12 +123,14 @@ services:
       - PGID=0
     env_file:
       - radarr.env
+    depends_on:
+      - jackett
+      - transmission
     ports:
       - 7878:7878
     volumes:
-      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/movies:/movies
       - ${DATA_VOLUME_BASE_PATH}/media_services/radarr/config:/config
-      - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/downloads:/downloads
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA
     networks:
       - proxy-tier
       - default
