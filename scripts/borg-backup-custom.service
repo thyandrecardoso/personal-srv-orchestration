@@ -1,0 +1,5 @@
+[Unit]
+Description="Backup system using borg backup"
+
+[Service]
+ExecStart=/home/thyandrecardoso/bin/borg_backup_wrapper.sh

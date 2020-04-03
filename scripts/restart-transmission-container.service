@@ -1,0 +1,6 @@
+[Unit]
+Description="Restart a docker container named Transmission"
+
+[Service]
+ExecStart=/bin/sh -c "docker restart transmission"
+

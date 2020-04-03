@@ -1,0 +1,17 @@
+[Unit]
+Description = Kodi Media Center
+After = remote-fs.target network-online.target
+Wants = network-online.target
+Conflicts = getty@tty1.service
+
+[Service]
+User = root
+Group = root
+Type = simple
+TTYPath = /dev/tty1
+StandardInput = tty
+ExecStartPre = /bin/sleep 60
+ExecStart = /usr/bin/kodi-standalone
+
+[Install]
+WantedBy=graphical.target
