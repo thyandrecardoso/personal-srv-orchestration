@@ -63,7 +63,7 @@ services:
     env_file:
       - transmission.env
     volumes:
-      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/downloads:/downloads
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA
       - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/config:/config
     ports:
       - 9091:9091
@@ -84,7 +84,6 @@ services:
       - 9117:9117
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/jackett/config:/config
-      - ${DATA_VOLUME_BASE_PATH}/media_services/jackett/downloads:/downloads
     networks:
       - proxy-tier
       - default
