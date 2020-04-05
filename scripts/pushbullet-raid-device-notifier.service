@@ -1,0 +1,5 @@
+[Unit]
+Description="Check RAID devices status and send a notification to pushbullet"
+
+[Service]
+ExecStart=/home/thyandrecardoso/bin/mdadm_pushbullet_notifier.sh

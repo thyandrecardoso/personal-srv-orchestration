@@ -1,0 +1,10 @@
+[Unit]
+Description="Check RAID status recurrently and send a notifications to pushbullet"
+
+[Timer]
+OnCalendar=*:0/15
+Persistent=true
+Unit=pushbullet-raid-device-notifier.service
+
+[Install]
+WantedBy=timers.target
