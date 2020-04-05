@@ -1,17 +1,3 @@
-Install docker
-configure docker log rotation
-install git and tools
-install kodi
-  - https://www.raspberrypi.org/forums/viewtopic.php?t=251645
-  - https://github.com/graysky2/kodi-standalone-service/blob/master/init/kodi.service
-
-
-transmission clean torrent script
-move .kodi home to external drive
-backup strategy
-trash movies
-
-
 ```
 $ git clone https://github.com/belerophon/personal-srv-orchestration.git
 $ cd personal-srv-orchestration
