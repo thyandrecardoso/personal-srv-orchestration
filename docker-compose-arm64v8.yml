@@ -75,7 +75,7 @@ services:
 
   # tracker sites proxy for the other two below
   jackett:
-    image: linuxserver/jackett:arm64v8-v0.14.541-ls61
+    image: linuxserver/jackett:arm64v8-latest
     container_name: jackett
     restart: unless-stopped
     env_file:
