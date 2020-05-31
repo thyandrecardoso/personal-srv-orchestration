@@ -20,7 +20,7 @@ services:
 
   # a Dropbox alternative, self-hosted
   nextcloud:
-    image: nextcloud:18.0.3-fpm-alpine
+    image: nextcloud:18.0.4-fpm-alpine
     container_name: nextcloud
     restart: unless-stopped
     volumes:
@@ -75,7 +75,7 @@ services:
 
   # tracker sites proxy for the other two below
   jackett:
-    image: linuxserver/jackett:arm64v8-v0.14.396-ls60
+    image: linuxserver/jackett:arm64v8-v0.14.541-ls61
     container_name: jackett
     restart: unless-stopped
     env_file:
@@ -90,7 +90,7 @@ services:
 
   # to look for TV series
   sonarr:
-    image: linuxserver/sonarr:arm64v8-2.0.0.5344-ls56
+    image: linuxserver/sonarr:arm64v8-2.0.0.5343-ls108
     container_name: sonarr
     restart: unless-stopped
     environment:
@@ -113,7 +113,7 @@ services:
 
   # to look for movies
   radarr:
-    image: linuxserver/radarr:arm64v8-0.2.0.1483-ls1
+    image: linuxserver/radarr:arm64v8-0.2.0.1494-ls8
     container_name: radarr
     restart: unless-stopped
     environment:
