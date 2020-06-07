@@ -134,6 +134,24 @@ services:
       - proxy-tier
       - default
 
+  # NFS v4 server
+  nfs:
+    image: itsthenetwork/nfs-server-alpine:latest-arm
+    container_name: nfs
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/London
+      - READ_ONLY=true
+      - SHARED_DIRECTORY=/media
+      - PERMITTED="192.168.0.*"
+    ports:
+      - 2049:2049
+    privileged: true
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/media:ro
+    networks:
+      - default
+
   # a build dependency for the actual nginx-proxy running bellow. This only triggers the image build...
   nginx-proxy-arm:
     image: nginx-proxy-arm # setting this along with "build", makes the build process to tag the image with this name
