@@ -12,7 +12,10 @@
 # As an alternative, I use this.
 
 # valid states for the array devices
-valid_states=("clean active")
+valid_states=(clean
+active
+clean,\ checking
+active,\ checking)
 # list raid devices
 devices=$(mdadm --query /dev/md/* | sed  -E "s/^(.*):.*$/\\1/")
 
