@@ -134,6 +134,29 @@ services:
       - proxy-tier
       - default
 
+  # subtitle download with integration with radarr and sonarr
+  bazarr:
+    image: linuxserver/bazarr:arm64v8-4c196224-ls38
+    container_name: bazarr
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/London
+      - PUID=0
+      - PGID=0
+    env_file:
+      - bazarr.env
+    depends_on:
+      - radarr
+      - sonarr
+    ports:
+      - 6767:6767
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/bazarr/config:/config
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA
+    networks:
+      - proxy-tier
+      - default
+
   # NFS v4 server
   nfs:
     image: itsthenetwork/nfs-server-alpine:latest-arm
