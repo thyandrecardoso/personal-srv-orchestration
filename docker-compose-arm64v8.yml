@@ -16,6 +16,7 @@ services:
   redis:
     image: arm64v8/redis:6.0.7-alpine3.12
     container_name: redis
+    command: redis-server --requirepass somedummypass # this is not exposed and used only in this internal network. It is required because of nextcloud
     restart: unless-stopped
 
   # a Dropbox alternative, self-hosted
@@ -30,6 +31,7 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_DB=nextcloud
       - REDIS_HOST=redis
+      - REDIS_HOST_PASSWORD=somedummypass
     env_file:
       - postgres.env
     depends_on:
