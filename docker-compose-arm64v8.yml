@@ -19,6 +19,26 @@ services:
     command: redis-server --requirepass somedummypass # this is not exposed and used only in this internal network. It is required because of nextcloud
     restart: unless-stopped
 
+  # maintenance processes that must be run regularly in order for Nextcloud to run properly
+  # same image used for the actual nextcloud service below
+  nextcloud-cron:
+    image: nextcloud:19.0.2-fpm-alpine
+    restart: unless-stopped
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/nextcloud:/var/www/html
+      - /etc/localtime:/etc/localtime:ro
+    entrypoint: /cron.sh
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=nextcloud
+      - REDIS_HOST=redis
+      - REDIS_HOST_PASSWORD=somedummypass
+      env_file:
+        - postgres.env
+    depends_on:
+      - postgres
+      - redis
+
   # a Dropbox alternative, self-hosted
   nextcloud:
     image: nextcloud:19.0.2-fpm-alpine
