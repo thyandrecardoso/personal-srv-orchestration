@@ -38,8 +38,7 @@ services:
     env_file:
       - postgres.env
     depends_on:
-      - postgres
-      - redis
+      - nextcloud
     logging:
       driver: "none"
 
