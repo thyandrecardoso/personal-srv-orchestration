@@ -9,8 +9,9 @@ services:
     restart: unless-stopped
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/postgres:/var/lib/postgresql/data
-    env_file:
-      - postgres.env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     logging:
       driver: "none"
 
@@ -33,12 +34,13 @@ services:
     environment:
       - POSTGRES_HOST=postgres
       - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - REDIS_HOST=redis
       - REDIS_HOST_PASSWORD=somedummypass
-    env_file:
-      - postgres.env
     depends_on:
-      - nextcloud
+      - postgres
+      - redis
     logging:
       driver: "none"
 
@@ -53,13 +55,14 @@ services:
     environment:
       - POSTGRES_HOST=postgres
       - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - REDIS_HOST=redis
       - REDIS_HOST_PASSWORD=somedummypass
-    env_file:
-      - postgres.env
     depends_on:
       - postgres
       - redis
+      - nextcloud-cron
     logging:
       driver: "none"
 
@@ -74,9 +77,13 @@ services:
       - nginx-nextcloud-fpm-front.env
     depends_on:
       - nextcloud
-    networks:
-      - proxy-tier
-      - default
+    expose:
+      - 80
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nextcloud.rule=Host(`${NEXTCLOUD_HOST}`)
+      - traefik.http.routers.nextcloud.entrypoints=websecure
+      - traefik.http.routers.nextcloud.tls.certresolver=myresolver
     logging:
       driver: "none"
 
@@ -89,18 +96,21 @@ services:
       - TZ=Europe/London
       - PUID=0
       - PGID=0
-    env_file:
-      - transmission.env
+      - USER=${TRANSMISSION_USER}
+      - PASS=${TRANSMISSION_PASSWORD}
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA
       - ${DATA_VOLUME_BASE_PATH}/media_services/transmission/config:/config
     ports:
-      - 9091:9091
       - 51413:51413
       - 51413:51413/udp
-    networks:
-      - proxy-tier
-      - default
+    expose:
+      - 9091
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.transmission.rule=Host(`${TRANSMISSION_HOST}`)
+      - traefik.http.routers.transmission.entrypoints=websecure
+      - traefik.http.routers.transmission.tls.certresolver=myresolver
     logging:
       driver: "none"
 
@@ -111,13 +121,15 @@ services:
     restart: unless-stopped
     env_file:
       - jackett.env
-    ports:
-      - 9117:9117
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/jackett/config:/config
-    networks:
-      - proxy-tier
-      - default
+    expose:
+      - 9117
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jackett.rule=Host(`${JACKETT_HOST}`)
+      - traefik.http.routers.jackett.entrypoints=websecure
+      - traefik.http.routers.jackett.tls.certresolver=myresolver
     logging:
       driver: "none"
 
@@ -130,19 +142,19 @@ services:
       - TZ=Europe/London
       - PUID=0
       - PGID=0
-    env_file:
-      - sonarr.env
     depends_on:
       - jackett
       - transmission
-    ports:
-      - 8989:8989
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/sonarr/config:/config
       - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA
-    networks:
-      - proxy-tier
-      - default
+    expose:
+      - 8989
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.sonarr.rule=Host(`${SONARR_HOST}`)
+      - traefik.http.routers.sonarr.entrypoints=websecure
+      - traefik.http.routers.sonarr.tls.certresolver=myresolver
     logging:
       driver: "none"
 
@@ -155,19 +167,19 @@ services:
       - TZ=Europe/London
       - PUID=0
       - PGID=0
-    env_file:
-      - radarr.env
     depends_on:
       - jackett
       - transmission
-    ports:
-      - 7878:7878
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/radarr/config:/config
       - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA
-    networks:
-      - proxy-tier
-      - default
+    expose:
+      - 7878
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.radarr.rule=Host(`${RADARR_HOST}`)
+      - traefik.http.routers.radarr.entrypoints=websecure
+      - traefik.http.routers.radarr.tls.certresolver=myresolver
     logging:
       driver: "none"
 
@@ -180,19 +192,19 @@ services:
       - TZ=Europe/London
       - PUID=0
       - PGID=0
-    env_file:
-      - bazarr.env
     depends_on:
       - radarr
       - sonarr
-    ports:
-      - 6767:6767
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/bazarr/config:/config
       - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA
-    networks:
-      - proxy-tier
-      - default
+    expose:
+      - 6767
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.bazarr.rule=Host(`${BAZARR_HOST}`)
+      - traefik.http.routers.bazarr.entrypoints=websecure
+      - traefik.http.routers.bazarr.tls.certresolver=myresolver
     logging:
       driver: "none"
 
@@ -211,55 +223,6 @@ services:
     privileged: true
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/media:ro
-    networks:
-      - default
-
-  # a build dependency for the actual nginx-proxy running bellow. This only triggers the image build...
-  nginx-proxy-arm:
-    image: nginx-proxy-arm # setting this along with "build", makes the build process to tag the image with this name
-    build:
-      context: ./nginx-proxy
-      dockerfile: Dockerfile.arm
-    restart: "no"
-    container_name: nginx-proxy-arm
-    command: "sh -c exit" # ... just exit the running container. We're using this only to trigger an image build...
-
-  # listens to changes on the docker server... if a new running container appears, with certain env vars set, it tries to generate a nginx proxy configuration so as to proxy a virtual host to the running container
-  custom-nginx-proxy:
-    build: ./custom-nginx-proxy
-    container_name: custom-nginx-proxy
-    restart: unless-stopped
-    ports:
-      - 80:80
-      - 443:443
-    labels:
-      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
-    volumes:
-      - certs:/etc/nginx/certs:ro
-      - vhost.d:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    networks:
-      - proxy-tier
-    depends_on:
-      - nginx-proxy-arm
-
-  # listens to changes on the docker server... if a new running container appears, with certain env vars set, it tries to generate an SSL certificate for it.
-  docker-letsencrypt-nginx-proxy-companion:
-    build: docker-letsencrypt-nginx-proxy-companion
-    container_name: docker-letsencrypt-nginx-proxy-companion
-    restart: unless-stopped
-    volumes:
-      - certs:/etc/nginx/certs
-      - vhost.d:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - proxy-tier
-    depends_on:
-      - custom-nginx-proxy
-    logging:
-      driver: "none"
 
   # updates your no ip DNS. Useful when you want to use a CNAME for your actual DNS server records... E.g. sub.domain.com -> CNAME -> my.dynamic.noip.com
   rpi-noip:
@@ -268,15 +231,28 @@ services:
     restart: unless-stopped
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/noip/config:/usr/local/etc # must supply a valid configuration file inside this folder, otherwise refer to the image on how to build one first.
-    networks:
-      - default
     logging:
       driver: "none"
 
-volumes:
-  certs:
-  vhost.d:
-  html:
-
-networks:
-  proxy-tier:
+  # https://github.com/traefik/traefik
+  # reverse proxy for our services. reads the labels, and adapts the configuration to correctly forward requests
+  # according to the host names.
+  traefik:
+    image: arm64v8/traefik:2.3
+    container_name: traefik
+    command:
+      #- --log.level=DEBUG
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.myresolver.acme.tlschallenge=true
+      #- --certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.myresolver.acme.email=${ACME_EMAIL}
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+    ports:
+      - 443:443
+      - 8080:8080
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/traefik/letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
