@@ -234,6 +234,21 @@ services:
     logging:
       driver: "none"
 
+  homeassistant:
+    container_name: homeassistant
+    image: homeassistant/raspberrypi3-homeassistant:stable
+    network_mode: host
+    environment:
+      - TZ=Europe/Lisbon
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/homeassistant/config:/config
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.homeassistant.rule=Host(`${HOMEASSISTANT_HOST}`)
+      - traefik.http.routers.homeassistant.entrypoints=websecure
+      - traefik.http.routers.homeassistant.tls.certresolver=myresolver
+      - traefik.http.services.homeassistant.loadbalancer.server.port=8123 # don't know why this is necessary. other work simply using the "expose" key
+
   # https://github.com/traefik/traefik
   # reverse proxy for our services. reads the labels, and adapts the configuration to correctly forward requests
   # according to the host names.
@@ -250,6 +265,8 @@ services:
       #- --certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       - --certificatesresolvers.myresolver.acme.email=${ACME_EMAIL}
       - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+    extra_hosts:
+      - host.docker.internal:172.17.0.1 # Required to be able to route into "host" network mode containers
     ports:
       - 443:443
       - 8080:8080
