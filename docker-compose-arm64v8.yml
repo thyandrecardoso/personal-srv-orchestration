@@ -237,6 +237,7 @@ services:
   homeassistant:
     container_name: homeassistant
     image: homeassistant/raspberrypi3-homeassistant:stable
+    restart: unless-stopped
     network_mode: host
     environment:
       - TZ=Europe/Lisbon
@@ -255,6 +256,7 @@ services:
   traefik:
     image: arm64v8/traefik:2.3
     container_name: traefik
+    restart: unless-stopped
     command:
       #- --log.level=DEBUG
       - --api.insecure=true
