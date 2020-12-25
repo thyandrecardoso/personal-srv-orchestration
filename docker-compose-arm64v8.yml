@@ -7,6 +7,8 @@ services:
     image: arm64v8/postgres:12.5-alpine
     container_name: postgres
     restart: unless-stopped
+    ports:
+      - 5432:5432
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/postgres:/var/lib/postgresql/data
     environment:
@@ -236,7 +238,7 @@ services:
 
   homeassistant:
     container_name: homeassistant
-    image: homeassistant/raspberrypi3-homeassistant:stable
+    image: homeassistant/odroid-n2-homeassistant
     restart: unless-stopped
     network_mode: host
     environment:
