@@ -264,7 +264,8 @@ services:
       - traefik.http.routers.alltube.rule=Host(`${ALLTUBE_HOST}`)
       - traefik.http.routers.alltube.entrypoints=websecure
       - traefik.http.routers.alltube.tls.certresolver=myresolver
-      - traefik.http.middlewares.alltube.basicauth.usersfile=${DATA_VOLUME_BASE_PATH}/traefik/alltube_basic_auth_users
+      - traefik.http.routers.api.middlewares=alltube
+      - traefik.http.middlewares.alltube.basicauth.usersfile=/basic-auth/alltube_basic_auth_users
     logging:
       driver: "none"
 
@@ -292,4 +293,5 @@ services:
       - 8080:8080
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/traefik/letsencrypt:/letsencrypt
+      - ${DATA_VOLUME_BASE_PATH}/traefik/basic-auth:/basic-auth
       - /var/run/docker.sock:/var/run/docker.sock:ro
