@@ -261,10 +261,10 @@ services:
       - 80
     labels:
       - traefik.enable=true
-      - traefik.http.routers.nextcloud.rule=Host(`${ALLTUBE_HOST}`)
-      - traefik.http.routers.nextcloud.entrypoints=websecure
-      - traefik.http.routers.nextcloud.tls.certresolver=myresolver
-      - traefik.http.middlewares.test-auth.basicauth.usersfile=${DATA_VOLUME_BASE_PATH}/traefik/alltube_basic_auth_users
+      - traefik.http.routers.alltube.rule=Host(`${ALLTUBE_HOST}`)
+      - traefik.http.routers.alltube.entrypoints=websecure
+      - traefik.http.routers.alltube.tls.certresolver=myresolver
+      - traefik.http.middlewares.alltube.basicauth.usersfile=${DATA_VOLUME_BASE_PATH}/traefik/alltube_basic_auth_users
     logging:
       driver: "none"
 
