@@ -264,8 +264,9 @@ services:
       - traefik.http.routers.alltube.rule=Host(`${ALLTUBE_HOST}`)
       - traefik.http.routers.alltube.entrypoints=websecure
       - traefik.http.routers.alltube.tls.certresolver=myresolver
-      - traefik.http.routers.api.middlewares=alltube
-      - traefik.http.middlewares.alltube.basicauth.usersfile=/basic-auth/alltube_basic_auth_users
+      - traefik.http.routers.alltube.middlewares=api-auth
+      # FIXME: maybe factor this out...
+      - traefik.http.middlewares.api-auth.basicauth.usersfile=/basic-auth/alltube_basic_auth_users
     logging:
       driver: "none"
 
