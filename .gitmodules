@@ -1,0 +1,3 @@
+[submodule "alltube"]
+	path = alltube
+	url = https://github.com/Rudloff/alltube.git

@@ -252,6 +252,22 @@ services:
       - traefik.http.routers.homeassistant.tls.certresolver=myresolver
       - traefik.http.services.homeassistant.loadbalancer.server.port=8123 # don't know why this is necessary. other work simply using the "expose" key
 
+  # a youtubedl frontend
+  alltube:
+    container_name: alltube
+    build: ./alltube
+    restart: unless-stopped
+    expose:
+      - 80
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nextcloud.rule=Host(`${ALLTUBE_HOST}`)
+      - traefik.http.routers.nextcloud.entrypoints=websecure
+      - traefik.http.routers.nextcloud.tls.certresolver=myresolver
+      - traefik.http.middlewares.test-auth.basicauth.usersfile=${DATA_VOLUME_BASE_PATH}/traefik/alltube_basic_auth_users
+    logging:
+      driver: "none"
+
   # https://github.com/traefik/traefik
   # reverse proxy for our services. reads the labels, and adapts the configuration to correctly forward requests
   # according to the host names.
