@@ -273,6 +273,10 @@ services:
   cadvisor:
     container_name: cadvisor
     image: unibaktr/cadvisor:latest # FIXME: no official multi-arch images at the time...
+    # FIXME: try to lower cpu usage: https://github.com/google/cadvisor/issues/2523
+    command:
+      - '--housekeeping_interval=60s'
+      - '--docker_only'
     restart: unless-stopped
     expose:
       - 8080
