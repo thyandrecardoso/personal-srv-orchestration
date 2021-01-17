@@ -264,9 +264,30 @@ services:
       - traefik.http.routers.alltube.rule=Host(`${ALLTUBE_HOST}`)
       - traefik.http.routers.alltube.entrypoints=websecure
       - traefik.http.routers.alltube.tls.certresolver=myresolver
-      - traefik.http.routers.alltube.middlewares=api-auth
-      # FIXME: maybe factor this out...
-      - traefik.http.middlewares.api-auth.basicauth.usersfile=/basic-auth/alltube_basic_auth_users
+      - traefik.http.routers.alltube.middlewares=alltube-auth
+      - traefik.http.middlewares.alltube-auth.basicauth.usersfile=/basic-auth/alltube_basic_auth_users
+    logging:
+      driver: "none"
+
+  # a monitor tool for the containers: https://github.com/google/cadvisor
+  cadvisor:
+    container_name: cadvisor
+    image: unibaktr/cadvisor:latest # FIXME: no official multi-arch images at the time...
+    restart: unless-stopped
+    expose:
+      - 8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cadvisor.rule=Host(`${CADVISOR_HOST}`)
+      - traefik.http.routers.cadvisor.entrypoints=websecure
+      - traefik.http.routers.cadvisor.tls.certresolver=myresolver
+      - traefik.http.routers.cadvisor.middlewares=cadvisor-auth
+      - traefik.http.middlewares.cadvisor-auth.basicauth.usersfile=/basic-auth/cadvisor_basic_auth_users
     logging:
       driver: "none"
 
