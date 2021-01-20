@@ -295,6 +295,28 @@ services:
     logging:
       driver: "none"
 
+  # password manager https://bitwarden.com/
+  # this image in not the official one: https://github.com/dani-garcia/bitwarden_rs
+  bitwarden:
+    image: bitwardenrs/server
+    restart: unless-stopped
+    expose:
+      - 80
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/bitwarden/data:/data
+    environment:
+      ADMIN_TOKEN: '${BITWARDEN_ADMIN_TOKEN}'
+      DATABASE_URL: '${BITWARDEN_DATABASE}'
+      WEBSOCKET_ENABLED: 'true'  # Required to use websockets
+      SIGNUPS_ALLOWED: 'false'   # set to false to disable signups
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.bitwarden.rule=Host(`${BITWARDEN_HOST}`)
+      - traefik.http.routers.bitwarden.entrypoints=websecure
+      - traefik.http.routers.bitwarden.tls.certresolver=myresolver
+    logging:
+      driver: "none"
+
   # https://github.com/traefik/traefik
   # reverse proxy for our services. reads the labels, and adapts the configuration to correctly forward requests
   # according to the host names.
