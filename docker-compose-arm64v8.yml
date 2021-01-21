@@ -298,6 +298,7 @@ services:
   # password manager https://bitwarden.com/
   # this image in not the official one: https://github.com/dani-garcia/bitwarden_rs
   bitwarden:
+    container_name: bitwarden
     image: bitwardenrs/server
     restart: unless-stopped
     expose:
