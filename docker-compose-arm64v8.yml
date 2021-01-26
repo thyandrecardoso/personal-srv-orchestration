@@ -251,6 +251,8 @@ services:
       - traefik.http.routers.homeassistant.entrypoints=websecure
       - traefik.http.routers.homeassistant.tls.certresolver=myresolver
       - traefik.http.services.homeassistant.loadbalancer.server.port=8123 # don't know why this is necessary. other work simply using the "expose" key
+    logging:
+      driver: "none"
 
   # a youtubedl frontend
   alltube:
