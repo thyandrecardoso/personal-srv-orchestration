@@ -132,6 +132,18 @@ services:
       - traefik.http.routers.jackett.rule=Host(`${JACKETT_HOST}`)
       - traefik.http.routers.jackett.entrypoints=websecure
       - traefik.http.routers.jackett.tls.certresolver=myresolver
+    depends_on:
+      - flaresolverr
+    logging:
+      driver: "none"
+
+  flaresolverr:
+    # DockerHub mirror flaresolverr/flaresolverr:latest
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    restart: unless-stopped
+    environment:
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
     logging:
       driver: "none"
 
@@ -251,6 +263,8 @@ services:
       - traefik.http.routers.homeassistant.entrypoints=websecure
       - traefik.http.routers.homeassistant.tls.certresolver=myresolver
       - traefik.http.services.homeassistant.loadbalancer.server.port=8123 # don't know why this is necessary. other work simply using the "expose" key
+    depends_on:
+      - postgres
     logging:
       driver: "none"
 
