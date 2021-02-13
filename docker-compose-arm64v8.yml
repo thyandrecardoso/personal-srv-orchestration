@@ -113,6 +113,10 @@ services:
       - traefik.http.routers.transmission.rule=Host(`${TRANSMISSION_HOST}`)
       - traefik.http.routers.transmission.entrypoints=websecure
       - traefik.http.routers.transmission.tls.certresolver=myresolver
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
     logging:
       driver: "none"
 
@@ -134,6 +138,10 @@ services:
       - traefik.http.routers.jackett.tls.certresolver=myresolver
     depends_on:
       - flaresolverr
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
     logging:
       driver: "none"
 
@@ -144,6 +152,10 @@ services:
     restart: unless-stopped
     environment:
       - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
     logging:
       driver: "none"
 
@@ -169,6 +181,10 @@ services:
       - traefik.http.routers.sonarr.rule=Host(`${SONARR_HOST}`)
       - traefik.http.routers.sonarr.entrypoints=websecure
       - traefik.http.routers.sonarr.tls.certresolver=myresolver
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
     logging:
       driver: "none"
 
@@ -194,6 +210,10 @@ services:
       - traefik.http.routers.radarr.rule=Host(`${RADARR_HOST}`)
       - traefik.http.routers.radarr.entrypoints=websecure
       - traefik.http.routers.radarr.tls.certresolver=myresolver
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
     logging:
       driver: "none"
 
@@ -219,6 +239,10 @@ services:
       - traefik.http.routers.bazarr.rule=Host(`${BAZARR_HOST}`)
       - traefik.http.routers.bazarr.entrypoints=websecure
       - traefik.http.routers.bazarr.tls.certresolver=myresolver
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
     logging:
       driver: "none"
 
@@ -245,6 +269,10 @@ services:
     restart: unless-stopped
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/noip/config:/usr/local/etc # must supply a valid configuration file inside this folder, otherwise refer to the image on how to build one first.
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
     logging:
       driver: "none"
 
@@ -265,6 +293,10 @@ services:
       - traefik.http.services.homeassistant.loadbalancer.server.port=8123 # don't know why this is necessary. other work simply using the "expose" key
     depends_on:
       - postgres
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
     logging:
       driver: "none"
 
@@ -282,6 +314,10 @@ services:
       - traefik.http.routers.alltube.tls.certresolver=myresolver
       - traefik.http.routers.alltube.middlewares=alltube-auth
       - traefik.http.middlewares.alltube-auth.basicauth.usersfile=/basic-auth/alltube_basic_auth_users
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
     logging:
       driver: "none"
 
@@ -331,6 +367,10 @@ services:
       - traefik.http.routers.bitwarden.rule=Host(`${BITWARDEN_HOST}`)
       - traefik.http.routers.bitwarden.entrypoints=websecure
       - traefik.http.routers.bitwarden.tls.certresolver=myresolver
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
     logging:
       driver: "none"
 
