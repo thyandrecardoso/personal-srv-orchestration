@@ -275,30 +275,6 @@ services:
       - 8.8.8.8
       - 8.8.4.4
 
-  # a monitor tool for the containers: https://github.com/google/cadvisor
-  cadvisor:
-    container_name: cadvisor
-    image: gcr.io/cadvisor/cadvisor:latest
-    # FIXME: try to lower cpu usage: https://github.com/google/cadvisor/issues/2523
-    command:
-      - '--housekeeping_interval=60s'
-      - '--docker_only'
-    restart: unless-stopped
-    expose:
-      - 8080
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.cadvisor.rule=Host(`${CADVISOR_HOST}`)
-      - traefik.http.routers.cadvisor.entrypoints=websecure
-      - traefik.http.routers.cadvisor.tls.certresolver=myresolver
-      - traefik.http.routers.cadvisor.middlewares=cadvisor-auth
-      - traefik.http.middlewares.cadvisor-auth.basicauth.usersfile=/basic-auth/cadvisor_basic_auth_users
-
   # password manager https://bitwarden.com/
   # this image in not the official one: https://github.com/dani-garcia/bitwarden_rs
   bitwarden:
@@ -379,7 +355,7 @@ networks:
   adguardhome_network:
     driver: macvlan
     driver_opts:
-      parent: eth0
+      parent: bond0
     ipam:
       config:
         - subnet: 192.168.0.0/24
