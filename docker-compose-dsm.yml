@@ -361,7 +361,7 @@ services:
       - NET_ADMIN
     networks:
       adguardhome_network:
-        ipv4_address: 192.168.0.200
+        ipv4_address: 192.168.0.253
     ports:
       - 443/tcp
       - 853/tcp
@@ -384,4 +384,4 @@ networks:
       config:
         - subnet: 192.168.0.0/24
           gateway: 192.168.0.1
-          ip_range: 192.168.0.200/32
+          ip_range: 192.168.0.253/32
