@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 
 services:
 
@@ -14,8 +14,6 @@ services:
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    logging:
-      driver: "none"
 
   # a key value store; acts as cache for NextCloud
   redis:
@@ -43,8 +41,6 @@ services:
     depends_on:
       - postgres
       - redis
-    logging:
-      driver: "none"
 
   # a Dropbox alternative, self-hosted
   nextcloud:
@@ -65,8 +61,6 @@ services:
       - postgres
       - redis
       - nextcloud-cron
-    logging:
-      driver: "none"
 
   # the actual php server for NextCloud
   nginx-nextcloud-fpm-front-x86:
@@ -75,8 +69,6 @@ services:
     restart: unless-stopped
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/nextcloud:/var/www/html:ro
-    env_file:
-      - nginx-nextcloud-fpm-front.env
     depends_on:
       - nextcloud
     expose:
@@ -86,8 +78,6 @@ services:
       - traefik.http.routers.nextcloud.rule=Host(`${NEXTCLOUD_HOST}`)
       - traefik.http.routers.nextcloud.entrypoints=websecure
       - traefik.http.routers.nextcloud.tls.certresolver=myresolver
-    logging:
-      driver: "none"
 
   # torrent client
   transmission:
@@ -117,16 +107,12 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
-    logging:
-      driver: "none"
 
   # tracker sites proxy for the other two below
   jackett:
     image: linuxserver/jackett:latest
     container_name: jackett
     restart: unless-stopped
-    env_file:
-      - jackett.env
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/jackett/config:/config
     expose:
@@ -142,8 +128,6 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
-    logging:
-      driver: "none"
 
   flaresolverr:
     # DockerHub mirror flaresolverr/flaresolverr:latest
@@ -151,13 +135,11 @@ services:
     container_name: flaresolverr
     restart: unless-stopped
     environment:
-      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+      - CAPTCHA_SOLVER=none
     dns:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
-    logging:
-      driver: "none"
 
   # to look for TV series
   sonarr:
@@ -185,8 +167,6 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
-    logging:
-      driver: "none"
 
   # to look for movies
   radarr:
@@ -214,8 +194,6 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
-    logging:
-      driver: "none"
 
   # subtitle download with integration with radarr and sonarr
   bazarr:
@@ -243,8 +221,6 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
-    logging:
-      driver: "none"
 
   # updates your no ip DNS. Useful when you want to use a CNAME for your actual DNS server records... E.g. sub.domain.com -> CNAME -> my.dynamic.noip.com
   ddns-updater:
@@ -257,8 +233,6 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
-    logging:
-      driver: "none"
 
   homeassistant:
     container_name: homeassistant
@@ -281,8 +255,6 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
-    logging:
-      driver: "none"
 
   # a youtubedl frontend
   alltube:
@@ -302,8 +274,6 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
-    logging:
-      driver: "none"
 
   # a monitor tool for the containers: https://github.com/google/cadvisor
   cadvisor:
@@ -328,8 +298,6 @@ services:
       - traefik.http.routers.cadvisor.tls.certresolver=myresolver
       - traefik.http.routers.cadvisor.middlewares=cadvisor-auth
       - traefik.http.middlewares.cadvisor-auth.basicauth.usersfile=/basic-auth/cadvisor_basic_auth_users
-    logging:
-      driver: "none"
 
   # password manager https://bitwarden.com/
   # this image in not the official one: https://github.com/dani-garcia/bitwarden_rs
@@ -355,8 +323,6 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
-    logging:
-      driver: "none"
 
   # https://github.com/traefik/traefik
   # reverse proxy for our services. reads the labels, and adapts the configuration to correctly forward requests
