@@ -228,7 +228,7 @@ services:
     container_name: ddns-updater
     restart: unless-stopped
     volumes:
-      - ${DATA_VOLUME_BASE_PATH}/noip/config:/usr/local/etc # must supply a valid configuration file inside this folder, otherwise refer to the image on how to build one first.
+      - ${DATA_VOLUME_BASE_PATH}/noip/config:/updater/data # must supply a valid configuration file inside this folder, otherwise refer to the image on how to build one first.
     dns:
       - 1.1.1.1
       - 8.8.8.8
