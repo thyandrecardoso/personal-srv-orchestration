@@ -344,7 +344,7 @@ services:
     extra_hosts:
       - host.docker.internal:172.17.0.1 # Required to be able to route into "host" network mode containers
     ports:
-      - 443:443
+      - 4443:443
       - 8080:8080
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/traefik/letsencrypt:/letsencrypt
