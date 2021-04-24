@@ -259,7 +259,7 @@ services:
   # a youtubedl frontend
   alltube:
     container_name: alltube
-    image: rudloff/alltube:latest
+    image: rudloff/alltube:develop
     restart: unless-stopped
     expose:
       - 80
