@@ -339,14 +339,14 @@ services:
       adguardhome_network:
         ipv4_address: 192.168.0.253
     ports:
-      - 443/tcp
-      - 853/tcp
-      - 53/tcp
-      - 53/udp
-      - 67/udp
-      - 68/udp
-      - 80/tcp
-      - 3000/tcp
+      - 443:443/tcp
+      - 853:853/tcp
+      - 53:53/tcp
+      - 53:53/udp
+      - 67:67/udp
+      - 68:68/udp
+      - 80:80/tcp
+      - 3000:3000/tcp
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/adguardhome/work:/opt/adguardhome/work
       - ${DATA_VOLUME_BASE_PATH}/adguardhome/conf:/opt/adguardhome/conf
