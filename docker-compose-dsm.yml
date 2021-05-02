@@ -362,7 +362,7 @@ services:
       adguardhome_network:
         ipv4_address: 192.168.0.253
     ports:
-      - 443:443/tcp
+      - 4444:443/tcp
       - 853:853/tcp
       - 53:53/tcp
       - 53:53/udp
