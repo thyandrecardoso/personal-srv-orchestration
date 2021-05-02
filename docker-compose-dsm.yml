@@ -65,7 +65,7 @@ services:
       - nextcloud-cron
 
   # the actual php server for NextCloud
-  nginx-nextcloud-fpm-front-x86:
+  nginx-nextcloud-fpm-front:
     build: ./nginx-nextcloud-fpm-front-x86
     container_name: nginx-nextcloud-fpm-front
     restart: unless-stopped
@@ -80,6 +80,25 @@ services:
       - traefik.http.routers.nextcloud.rule=Host(`${NEXTCLOUD_HOST}`)
       - traefik.http.routers.nextcloud.entrypoints=websecure
       - traefik.http.routers.nextcloud.tls.certresolver=myresolver
+      # Middlewares
+      ## Proxy
+      ## https://github.com/azonictechnophile/nextcloud_on_docker/blob/4255c29e58f485ae1bad7f0ade61bb99b09e8c21/roles/docker_container/tasks/nginx.yml#L46
+      - traefik.http.middlewares.nextcloud.headers.referrerPolicy=no-referrer
+      - traefik.http.middlewares.nextcloud.headers.SSLRedirect=true
+      #- traefik.http.middlewares.nextcloud.headers.STSSeconds=15552001
+      #- traefik.http.middlewares.nextcloud.headers.STSSeconds=315360000
+      - traefik.http.middlewares.nextcloud.headers.browserXSSFilter=true
+      - traefik.http.middlewares.nextcloud.headers.contentTypeNosniff=true
+      #- traefik.http.middlewares.nextcloud.headers.forceSTSHeader=true
+      #- traefik.http.middlewares.nextcloud.headers.STSIncludeSubdomains=true
+      #- traefik.http.middlewares.nextcloud.headers.STSPreload=true
+      - traefik.http.middlewares.nextcloud.headers.customFrameOptionsValue=SAMEORIGIN
+      #- traefik.http.middlewares.nextcloud.headers.customRequestHeaders.X-Forwarded-Proto=https
+      ## CalDAV/CardDAV
+      ## https://docs.nextcloud.com/server/15/admin_manual/configuration_server/reverse_proxy_configuration.html#traefik
+      - traefik.http.middlewares.nextcloud-dav.redirectRegex.permanent = true
+      - traefik.http.middlewares.nextcloud-dav.redirectRegex.regex = "https://(.*)/.well-known/(card|cal)dav"
+      - traefik.http.middlewares.nextcloud-dav.redirectRegex.replacement = "https://${1}/remote.php/dav/"
     logging:
       driver: "none"
 
