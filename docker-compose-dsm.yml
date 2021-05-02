@@ -21,6 +21,8 @@ services:
     container_name: redis
     command: redis-server --requirepass somedummypass # this is not exposed and used only in this internal network. It is required because of nextcloud
     restart: unless-stopped
+    logging:
+      driver: "none"
 
   # maintenance processes that must be run regularly in order for Nextcloud to run properly
   # same image used for the actual nextcloud service below
@@ -78,6 +80,8 @@ services:
       - traefik.http.routers.nextcloud.rule=Host(`${NEXTCLOUD_HOST}`)
       - traefik.http.routers.nextcloud.entrypoints=websecure
       - traefik.http.routers.nextcloud.tls.certresolver=myresolver
+    logging:
+      driver: "none"
 
   # torrent client
   transmission:
