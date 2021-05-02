@@ -96,9 +96,9 @@ services:
       #- traefik.http.middlewares.nextcloud.headers.customRequestHeaders.X-Forwarded-Proto=https
       ## CalDAV/CardDAV
       ## https://docs.nextcloud.com/server/15/admin_manual/configuration_server/reverse_proxy_configuration.html#traefik
-      - traefik.http.middlewares.nextcloud-dav.redirectRegex.permanent = true
-      - traefik.http.middlewares.nextcloud-dav.redirectRegex.regex = "https://(.*)/.well-known/(card|cal)dav"
-      - traefik.http.middlewares.nextcloud-dav.redirectRegex.replacement = "https://${1}/remote.php/dav/"
+      - traefik.http.middlewares.nextcloud-dav.redirectRegex.permanent=true
+      - traefik.http.middlewares.nextcloud-dav.redirectRegex.regex="https://(.*)/.well-known/(card|cal)dav"
+      - traefik.http.middlewares.nextcloud-dav.redirectRegex.replacement="https://$${1}/remote.php/dav/"
     logging:
       driver: "none"
 
