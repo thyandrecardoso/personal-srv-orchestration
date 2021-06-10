@@ -379,6 +379,20 @@ services:
       - ${DATA_VOLUME_BASE_PATH}/adguardhome/work:/opt/adguardhome/work
       - ${DATA_VOLUME_BASE_PATH}/adguardhome/conf:/opt/adguardhome/conf
 
+  speedtest:
+    image: henrywhitaker3/speedtest-tracker
+    container_name: speedtest
+    ports:
+      - 8765:80
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/speedtest/config:/config
+    environment:
+      - TZ=Europe/Lisbon
+      - PGID=0
+      - PUID=0
+      - OOKLA_EULA_GDPR=true
+    restart: unless-stopped
+
 networks:
   adguardhome_network:
     driver: macvlan
