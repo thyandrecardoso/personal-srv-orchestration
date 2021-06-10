@@ -44,6 +44,8 @@ services:
     depends_on:
       - postgres
       - redis
+    logging:
+      driver: "none"
 
   # a Dropbox alternative, self-hosted
   nextcloud:
