@@ -28,6 +28,7 @@ services:
   # same image used for the actual nextcloud service below
   nextcloud-cron:
     image: nextcloud:21.0.2-fpm-alpine
+    container_name: nextcloud-cron
     restart: unless-stopped
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/nextcloud:/var/www/html
@@ -63,6 +64,8 @@ services:
       - postgres
       - redis
       - nextcloud-cron
+    logging:
+      driver: "none"
 
   # the actual php server for NextCloud
   nginx-nextcloud-fpm-front:
@@ -278,6 +281,8 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
+    logging:
+      driver: "none"
 
   # a youtubedl frontend
   alltube:
