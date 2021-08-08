@@ -66,6 +66,7 @@ services:
       - postgres
       - redis
       - nextcloud-cron
+      - nginx-nextcloud-fpm-front
     logging:
       driver: "none"
 
@@ -76,8 +77,6 @@ services:
     restart: unless-stopped
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/nextcloud:/var/www/html:ro
-    depends_on:
-      - nextcloud
     expose:
       - 80
     labels:
@@ -381,6 +380,8 @@ services:
       - ${DATA_VOLUME_BASE_PATH}/adguardhome/work:/opt/adguardhome/work
       - ${DATA_VOLUME_BASE_PATH}/adguardhome/conf:/opt/adguardhome/conf
 
+  # schedules an internet speed test with a custom recurrence and records the result so you can see the results
+  # in a graph across time.
   speedtest:
     image: henrywhitaker3/speedtest-tracker
     container_name: speedtest
@@ -395,11 +396,12 @@ services:
 
 networks:
   adguardhome_network:
+    name: adguardhome_network
     driver: macvlan
     driver_opts:
       parent: bond0
     ipam:
       config:
         - subnet: 192.168.0.0/24
-          gateway: 192.168.0.1
+          gateway: 192.168.0.254
           ip_range: 192.168.0.253/32
