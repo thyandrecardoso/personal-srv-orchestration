@@ -328,6 +328,8 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # https://github.com/docker/for-linux/issues/264
 
   # https://github.com/traefik/traefik
   # reverse proxy for our services. reads the labels, and adapts the configuration to correctly forward requests
