@@ -396,6 +396,28 @@ services:
       - OOKLA_EULA_GDPR=true
     restart: unless-stopped
 
+  freshrss:
+    image: freshrss/freshrss:latest
+    container_name: freshrss
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/freshrss/data:/var/www/FreshRSS/data
+      - ${DATA_VOLUME_BASE_PATH}/freshrss/extensions:/var/www/FreshRSS/extensions
+    environment:
+      CRON_MIN: '*/20'
+      TZ: Europe/Lisbon
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.freshrss.rule=Host(`${FRESHRSS_HOST}`)
+      - traefik.http.routers.freshrss.entrypoints=websecure
+      - traefik.http.routers.freshrss.tls.certresolver=myresolver
+      - traefik.frontend.headers.forceSTSHeader=true
+      - traefik.frontend.headers.STSSeconds=31536000
+    logging:
+      driver: "none"
+
 networks:
   adguardhome_network:
     name: adguardhome_network
