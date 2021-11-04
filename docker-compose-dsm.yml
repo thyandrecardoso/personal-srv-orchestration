@@ -335,7 +335,7 @@ services:
   # reverse proxy for our services. reads the labels, and adapts the configuration to correctly forward requests
   # according to the host names.
   traefik:
-    image: traefik:v2.4
+    image: traefik:v2.5
     container_name: traefik
     restart: unless-stopped
     command:
