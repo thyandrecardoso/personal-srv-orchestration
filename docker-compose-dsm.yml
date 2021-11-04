@@ -261,7 +261,7 @@ services:
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/prowlarr/config:/config
     expose:
-      - 9696:9696
+      - 9696
     labels:
       - traefik.enable=true
       - traefik.http.routers.prowlarr.rule=Host(`${PROWLARR_HOST}`)
