@@ -178,6 +178,7 @@ services:
       - PUID=0
       - PGID=0
     depends_on:
+      - prowlarr
       - jackett
       - transmission
     volumes:
@@ -205,6 +206,7 @@ services:
       - PUID=0
       - PGID=0
     depends_on:
+      - prowlarr
       - jackett
       - transmission
     volumes:
@@ -244,6 +246,29 @@ services:
       - traefik.http.routers.bazarr.rule=Host(`${BAZARR_HOST}`)
       - traefik.http.routers.bazarr.entrypoints=websecure
       - traefik.http.routers.bazarr.tls.certresolver=myresolver
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
+
+  # like jackett, an indexer manager but it connects via API to radarr and sonarr in order so sync the indexers
+  prowlarr:
+    image: ghcr.io/linuxserver/prowlarr:develop
+    container_name: prowlarr
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Lisbon
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/prowlarr/config:/config
+    expose:
+      - 9696:9696
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.prowlarr.rule=Host(`${PROWLARR_HOST}`)
+      - traefik.http.routers.prowlarr.entrypoints=websecure
+      - traefik.http.routers.prowlarr.tls.certresolver=myresolver
+    depends_on:
+      - flaresolverr
     dns:
       - 1.1.1.1
       - 8.8.8.8
