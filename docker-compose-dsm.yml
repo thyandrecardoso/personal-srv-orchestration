@@ -310,7 +310,7 @@ services:
   # this image in not the official one: https://github.com/dani-garcia/bitwarden_rs
   bitwarden:
     container_name: bitwarden
-    image: bitwardenrs/server
+    image: vaultwarden/server:latest
     restart: unless-stopped
     expose:
       - 80
