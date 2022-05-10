@@ -307,7 +307,7 @@ services:
       - 8.8.4.4
 
   # password manager https://bitwarden.com/
-  # this image in not the official one: https://github.com/dani-garcia/bitwarden_rs
+  # this image is not the official one: https://github.com/dani-garcia/bitwarden_rs
   bitwarden:
     container_name: bitwarden
     image: vaultwarden/server:latest
