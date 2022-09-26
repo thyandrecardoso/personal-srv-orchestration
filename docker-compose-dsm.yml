@@ -259,8 +259,6 @@ services:
       - ${DATA_VOLUME_BASE_PATH}/media_services/recyclarr/config:/config
     environment:
       - TZ=Europe/Lisbon
-      - PUID=0
-      - PGID=0
 
   # updates your no ip DNS. Useful when you want to use a CNAME for your actual DNS server records... E.g. sub.domain.com -> CNAME -> my.dynamic.noip.com
   ddns-updater:
