@@ -251,8 +251,10 @@ services:
       - 8.8.8.8
       - 8.8.4.4
 
+  # Syncs configurations from https://trash-guides.info into sonarr and radarr
+  # debug/test examples:  docker-compose -f docker-compose-dsm.yml run --rm recyclarr radarr --debug
   recyclarr:
-    image: ghcr.io/recyclarr/recyclarr:2
+    image: ghcr.io/recyclarr/recyclarr:3
     container_name: recyclarr
     init: true
     volumes:
@@ -393,19 +395,18 @@ services:
       - ${DATA_VOLUME_BASE_PATH}/adguardhome/work:/opt/adguardhome/work
       - ${DATA_VOLUME_BASE_PATH}/adguardhome/conf:/opt/adguardhome/conf
 
-  # schedules an internet speed test with a custom recurrence and records the result so you can see the results
-  # in a graph across time.
+  # runs internet speed tests and keeps track of results
   speedtest:
-    image: henrywhitaker3/speedtest-tracker:latest
+    image: ghcr.io/alexjustesen/speedtest-tracker:latest
     container_name: speedtest
+    restart: unless-stopped
     ports:
-      - 8765:80
+      - 8765:80/tcp
+    environment:
+      - PUID=1000
+      - PGID=1000
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/speedtest/config:/config
-    environment:
-      - TZ=Europe/Lisbon
-      - OOKLA_EULA_GDPR=true
-    restart: unless-stopped
 
   freshrss:
     image: freshrss/freshrss:latest
