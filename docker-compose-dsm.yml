@@ -4,13 +4,13 @@ services:
 
   # a DB server; the underlying DB for NextCloud
   postgres:
-    image: postgres:13
+    image: postgres:15
     container_name: postgres
     restart: unless-stopped
     ports:
       - 54321:5432
     volumes:
-      - ${DATA_VOLUME_BASE_PATH}/postgres/13/data:/var/lib/postgresql/data
+      - ${DATA_VOLUME_BASE_PATH}/postgres/15/data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -401,7 +401,7 @@ services:
     container_name: speedtest
     restart: unless-stopped
     ports:
-      - 8765:80/tcp
+        - 8765:80/tcp
     environment:
       - PUID=1000
       - PGID=1000
