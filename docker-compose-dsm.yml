@@ -27,7 +27,7 @@ services:
   # maintenance processes that must be run regularly in order for Nextcloud to run properly
   # same image used for the actual nextcloud service below
   nextcloud-cron:
-    image: nextcloud:24-fpm-alpine
+    image: nextcloud:25-fpm-alpine
     container_name: nextcloud-cron
     restart: unless-stopped
     volumes:
@@ -49,7 +49,7 @@ services:
 
   # a Dropbox alternative, self-hosted
   nextcloud:
-    image: nextcloud:24-fpm-alpine
+    image: nextcloud:25-fpm-alpine
     container_name: nextcloud
     restart: unless-stopped
     volumes:
