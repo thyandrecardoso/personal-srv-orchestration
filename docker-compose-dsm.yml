@@ -48,6 +48,7 @@ services:
       driver: "none"
 
   # a Dropbox alternative, self-hosted
+  # example for adding missing indices after update: `docker exec --user www-data nextcloud php occ db:add-missing-indices`
   nextcloud:
     image: nextcloud:25-fpm-alpine
     container_name: nextcloud
