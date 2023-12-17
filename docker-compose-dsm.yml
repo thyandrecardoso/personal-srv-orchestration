@@ -255,7 +255,7 @@ services:
   # Syncs configurations from https://trash-guides.info into sonarr and radarr
   # debug/test examples:  docker-compose -f docker-compose-dsm.yml run --rm recyclarr radarr --debug
   recyclarr:
-    image: ghcr.io/recyclarr/recyclarr:3
+    image: ghcr.io/recyclarr/recyclarr:6
     container_name: recyclarr
     init: true
     volumes:
@@ -406,6 +406,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+      - APP_KEY==${SPEEDTEST_APP_KEY}
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/speedtest/config:/config
 
