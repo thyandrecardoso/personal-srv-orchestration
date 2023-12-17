@@ -406,7 +406,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - APP_KEY==${SPEEDTEST_APP_KEY}
+      - APP_KEY=${SPEEDTEST_APP_KEY}
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/speedtest/config:/config
 
