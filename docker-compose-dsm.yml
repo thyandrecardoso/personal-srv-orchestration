@@ -263,6 +263,35 @@ services:
     environment:
       - TZ=Europe/Lisbon
 
+  # a media server like Plex
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    restart: unless-stopped
+    user: 0:0
+    privileged: true
+    expose:
+      - 8096
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/jellyfin/config:/config
+      - ${DATA_VOLUME_BASE_PATH}/media_services/jellyfin/cache:/cache
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/media:ro
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jellyfin.rule=Host(`${JELLYFIN_HOST}`)
+      - traefik.http.routers.jellyfin.entrypoints=websecure
+      - traefik.http.routers.jellyfin.tls.certresolver=myresolver
+      - traefik.frontend.headers.forceSTSHeader=true
+      - traefik.frontend.headers.STSSeconds=31536000
+    environment:
+      - JELLYFIN_PublishedServerUrl=https://${JELLYFIN_HOST}
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
+
   # updates your no ip DNS. Useful when you want to use a CNAME for your actual DNS server records... E.g. sub.domain.com -> CNAME -> my.dynamic.noip.com
   ddns-updater:
     image: qmcgaw/ddns-updater
