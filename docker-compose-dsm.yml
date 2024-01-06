@@ -292,6 +292,51 @@ services:
       - 8.8.8.8
       - 8.8.4.4
 
+  # another media server...
+  midarr:
+    image: ghcr.io/midarrlabs/midarr-server:latest
+    container_name: midarr
+    restart: unless-stopped
+    expose:
+      - 4000
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/media:ro
+    environment:
+      #       App config
+      - APP_URL: 'https://${MIDARR_HOSTNAME}'
+
+      #       Database config
+      - DB_USERNAME: 'midarr'
+      - DB_PASSWORD: '${MIDARR_POSTGRES_PASSWORD}'
+      - DB_DATABASE: 'midarr'
+      - DB_HOSTNAME: 'postgresql'
+
+      #       Admin account
+      - SETUP_ADMIN_EMAIL: '${MIDARR_ADMIN_EMAIL}'
+      - SETUP_ADMIN_NAME: '${MIDARR_ADMIN_USERNAME}'
+      - SETUP_ADMIN_PASSWORD: '${MIDARR_ADMIN_PASSWORD}' # minimum length 12
+
+      #       Radarr integration
+      - RADARR_BASE_URL: 'radarr:7878'
+      - RADARR_API_KEY: '${MIDARR_RADARR_API_KEY}'
+
+      #       Sonarr integration
+      - SONARR_BASE_URL: 'sonarr:8989'
+      - SONARR_API_KEY: '${MIDARR_SONARR_API_KEY}'
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.midarr.rule=Host(`${MIDARR_HOST}`)
+      - traefik.http.routers.midarr.entrypoints=websecure
+      - traefik.http.routers.midarr.tls.certresolver=myresolver
+      - traefik.frontend.headers.forceSTSHeader=true
+      - traefik.frontend.headers.STSSeconds=31536000
+
+    depends_on:
+      - postgres
+      - radarr
+      - sonarr
+
   # updates your no ip DNS. Useful when you want to use a CNAME for your actual DNS server records... E.g. sub.domain.com -> CNAME -> my.dynamic.noip.com
   ddns-updater:
     image: qmcgaw/ddns-updater
