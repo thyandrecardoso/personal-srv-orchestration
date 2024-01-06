@@ -300,13 +300,13 @@ services:
     expose:
       - 4000
     volumes:
-      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/media:ro
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA:ro
     environment:
       - APP_URL=https://${MIDARR_HOSTNAME}
       - DB_USERNAME=midarr
       - DB_PASSWORD=${MIDARR_POSTGRES_PASSWORD}
       - DB_DATABASE=midarr
-      - DB_HOSTNAME=postgresql
+      - DB_HOSTNAME=postgres
       - SETUP_ADMIN_EMAIL=${MIDARR_ADMIN_EMAIL}
       - SETUP_ADMIN_NAME=${MIDARR_ADMIN_USERNAME}
       - SETUP_ADMIN_PASSWORD=${MIDARR_ADMIN_PASSWORD} # minimum length 1
