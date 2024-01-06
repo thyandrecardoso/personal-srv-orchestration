@@ -27,7 +27,7 @@ services:
   # maintenance processes that must be run regularly in order for Nextcloud to run properly
   # same image used for the actual nextcloud service below
   nextcloud-cron:
-    image: nextcloud:25-fpm-alpine
+    image: nextcloud:28-fpm-alpine
     container_name: nextcloud-cron
     restart: unless-stopped
     volumes:
@@ -50,7 +50,7 @@ services:
   # a Dropbox alternative, self-hosted
   # example for adding missing indices after update: `docker exec --user www-data nextcloud php occ db:add-missing-indices`
   nextcloud:
-    image: nextcloud:25-fpm-alpine
+    image: nextcloud:28-fpm-alpine
     container_name: nextcloud
     restart: unless-stopped
     volumes:
