@@ -362,25 +362,6 @@ services:
     logging:
       driver: "none"
 
-  # a youtubedl frontend
-  alltube:
-    container_name: alltube
-    image: rudloff/alltube:develop
-    restart: unless-stopped
-    expose:
-      - 80
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.alltube.rule=Host(`${ALLTUBE_HOST}`)
-      - traefik.http.routers.alltube.entrypoints=websecure
-      - traefik.http.routers.alltube.tls.certresolver=myresolver
-      - traefik.http.routers.alltube.middlewares=alltube-auth
-      - traefik.http.middlewares.alltube-auth.basicauth.usersfile=/basic-auth/alltube_basic_auth_users
-    dns:
-      - 1.1.1.1
-      - 8.8.8.8
-      - 8.8.4.4
-
   # password manager https://bitwarden.com/
   # this image is not the official one: https://github.com/dani-garcia/bitwarden_rs
   bitwarden:
