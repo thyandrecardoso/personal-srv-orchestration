@@ -1,0 +1,82 @@
+sonarr:
+  home-sonarr:
+    base_url: !secret sonarr_url
+    api_key: !secret sonarr_api_key
+
+    quality_definition:
+      type: series
+
+    replace_existing_custom_formats: true
+    delete_old_custom_formats: true
+
+    custom_formats:
+      - trash_ids:
+          - 85c61753df5da1fb2aab6f2a47426b09 # - Unwanted: BR-DISK
+          - fbcb31d8dabd2a319072b84fc0b7249c # - Unwanted: Extras
+          - 9c11cd3f07101cdba90a2d81cf0e56b4 # - Unwanted: LQ
+          - e2315f990da2e2cbfc9fa5b7a6fcfe48 # - Unwanted: LQ (Release Title)
+          - 23297a736ca77c0fc8e70f8edd7ee56c # - Unwanted: Upscaled
+          - 47435ece6b99a0b477caf360e79ba0bb # - Unwanted: x265 (HD)
+          - 32b367365729d530ca1c124a0b180c64 # - Unwanted: Bad Dual Groups
+          - 82d40da2bc6923f41e14394075dd4b03 # - Unwanted: No-RlsGroup
+          - e1a997ddb54e3ecbfe06341ad323c458 # - Unwanted: Obfuscated
+          - 06d66ab109d4d2eddb2794d21526d140 # - Unwanted: Retags
+          - d2d299244a92b8a52d4921ce3897a256 # - Wanted: UHD Streaming Cut
+          - 2b239ed870daba8126a53bd5dc8dc1c8 # - Wanted: DV HDR10Plus
+          - a3d82cbef5039f8d295478d28a887159 # - Wanted: HDR10Plus
+          - 3497799d29a085e2ac2df9d468413c94 # - Wanted: HDR10
+          - 3e2c4e748b64a1a1118e0ea3f4cf6875 # - Wanted: HDR
+          - bb019e1cd00f304f80971c965de064dc # - Wanted: HDR (undefined)
+          - 3a4127d8aa781b44120d907f2cd62627 # - Wanted: Hybrid
+          - b735f09d3c025cbb7d75a5d38325b73b # - Wanted: Remaster
+          - d660701077794679fd59e8bdf4ce3a29 # - Wanted: AMZN
+          - f67c9ca88f463a48346062e8ad07713f # - Wanted: ATVP
+          - 77a7b25585c18af08f60b1547bb9b4fb # - Wanted: CC
+          - 89358767a60cc28783cdc3d0be9388a4 # - Wanted: DSNP
+          - a880d6abc21e7c16884f3ae393f84179 # - Wanted: HMAX
+          - 7a235133c87f7da4c8cccceca7e3c7a6 # - Wanted: HBO
+          - d34870697c9db575f17700212167be23 # - Wanted: NF
+          - 43b3cf48cb385cd3eac608ee6bca7f09 # - Wanted: UHD Streaming Boost
+
+        quality_profiles:
+          - name: Custom 1080p/4k
+
+
+radarr:
+  home-radarr:
+    base_url: !secret radarr_url
+    api_key: !secret radarr_api_key
+
+    quality_definition:
+      type: movie
+
+    replace_existing_custom_formats: true
+    delete_old_custom_formats: true
+
+    custom_formats:
+      - trash_ids:
+          - 90cedc1fea7ea5d11298bebd3d1d3223 # EVO (no WEBDL)
+          - ed38b889b31be83fda192888e2286d83 # BR-DISK
+          - 90a6f9a284dff5103f6346090e6280c8 # LQ
+          - e204b80c87be9497a8a6eaff48f72905 # LQ (Release Title)
+          - b8cd450cbfa689c0259a01d9e29ba3d6 # 3D
+          - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
+          - bfd8eb01832d646a0a89c4deb46f8564 # Upscaled
+          - 0a3f082873eb454bde444150b70253cc # Extras
+          - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
+          - 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
+          - 3a3ff47579026e76d6504ebea39390de # Remux Tier 01
+          - b974a6cd08c1066250f1f177d7aa1225 # HDR10+
+          - dfb86d5941bc9075d6af23b09c2aeecd # HDR10
+          - e61e28db95d22bedcadf030b8f156d96 # HDR
+          - 2a4d9069cc1fe3242ff9bdaebed239bb # HDR (undefined)
+          - eca37840c13c6ef2dd0262b141a5482f # 4K Remaster
+          - 0f12c086e289cf966fa5948eac571f44 # Hybrid
+          - 570bc9ebecd92723d2d21500f4be314c # Remaster
+          - 957d0f44b592285f26449575e8b1167e # Special Edition
+          - b17886cb4158d9fea189859409975758 # HDR10+ Boost
+          - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
+          - b17886cb4158d9fea189859409975758 # HDR10+ Boost
+
+        quality_profiles:
+          - name: Custom 1080p/4k
