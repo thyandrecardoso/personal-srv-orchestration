@@ -255,7 +255,7 @@ services:
   # Syncs configurations from https://trash-guides.info into sonarr and radarr
   # debug/test examples:  docker-compose -f docker-compose-dsm.yml run --rm recyclarr radarr --debug
   recyclarr:
-    image: ghcr.io/recyclarr/recyclarr:6
+    image: ghcr.io/recyclarr/recyclarr:7
     container_name: recyclarr
     init: true
     volumes:
@@ -338,30 +338,6 @@ services:
       - 8.8.8.8
       - 8.8.4.4
 
-  homeassistant:
-    container_name: homeassistant
-    image: homeassistant/home-assistant:latest
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      - TZ=Europe/Lisbon
-    volumes:
-      - ${DATA_VOLUME_BASE_PATH}/homeassistant/config:/config
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.homeassistant.rule=Host(`${HOMEASSISTANT_HOST}`)
-      - traefik.http.routers.homeassistant.entrypoints=websecure
-      - traefik.http.routers.homeassistant.tls.certresolver=myresolver
-      - traefik.http.services.homeassistant.loadbalancer.server.port=8123 # don't know why this is necessary. other work simply using the "expose" key
-    depends_on:
-      - postgres
-    dns:
-      - 1.1.1.1
-      - 8.8.8.8
-      - 8.8.4.4
-    logging:
-      driver: "none"
-
   # password manager https://bitwarden.com/
   # this image is not the official one: https://github.com/dani-garcia/bitwarden_rs
   bitwarden:
@@ -416,30 +392,6 @@ services:
       - ${DATA_VOLUME_BASE_PATH}/traefik/basic-auth:/basic-auth
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  # like pihole...
-  adguardhome:
-    image: adguard/adguardhome
-    container_name: adguardhome
-    restart: unless-stopped
-    mac_address: de:92:b8:c6:fe:84
-    cap_add:
-      - NET_ADMIN
-    networks:
-      adguardhome_network:
-        ipv4_address: 192.168.0.253
-    ports:
-      - 4444:443/tcp
-      - 853:853/tcp
-      - 53:53/tcp
-      - 53:53/udp
-      - 67:67/udp
-      - 68:68/udp
-      - 80:80/tcp
-      - 3000:3000/tcp
-    volumes:
-      - ${DATA_VOLUME_BASE_PATH}/adguardhome/work:/opt/adguardhome/work
-      - ${DATA_VOLUME_BASE_PATH}/adguardhome/conf:/opt/adguardhome/conf
-
   # runs internet speed tests and keeps track of results
   speedtest:
     image: ghcr.io/alexjustesen/speedtest-tracker:latest
@@ -475,15 +427,3 @@ services:
       - traefik.frontend.headers.STSSeconds=31536000
     logging:
       driver: "none"
-
-networks:
-  adguardhome_network:
-    name: adguardhome_network
-    driver: macvlan
-    driver_opts:
-      parent: bond0
-    ipam:
-      config:
-        - subnet: 192.168.0.0/24
-          gateway: 192.168.0.254
-          ip_range: 192.168.0.253/32
