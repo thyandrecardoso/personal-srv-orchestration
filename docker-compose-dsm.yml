@@ -326,6 +326,29 @@ services:
       - radarr
       - sonarr
 
+  homarr:
+    image: ghcr.io/ajnart/homarr:latest
+    container_name: homarr
+    restart: unless-stopped
+    expose:
+      - 7575
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - ${DATA_VOLUME_BASE_PATH}/media_services/homarr/configs:/app/data/configs
+      - ${DATA_VOLUME_BASE_PATH}/media_services/homarr/icons:/app/public/icons
+      - ${DATA_VOLUME_BASE_PATH}/media_services/homarr/data:/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.homarr.rule=Host(`${HOMARR_HOSTNAME}`)
+      - traefik.http.routers.homarr.entrypoints=websecure
+      - traefik.http.routers.homarr.tls.certresolver=myresolver
+      - traefik.frontend.headers.forceSTSHeader=true
+      - traefik.frontend.headers.STSSeconds=31536000
+    depends_on:
+      - radarr
+      - sonarr
+      - transmission
+
   # updates your no ip DNS. Useful when you want to use a CNAME for your actual DNS server records... E.g. sub.domain.com -> CNAME -> my.dynamic.noip.com
   ddns-updater:
     image: qmcgaw/ddns-updater
