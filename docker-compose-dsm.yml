@@ -326,30 +326,6 @@ services:
       - radarr
       - sonarr
 
-  overseerr:
-    image: sctx/overseerr:latest
-    container_name: overseerr
-    restart: unless-stopped
-    expose:
-      - 5055
-    environment:
-      - LOG_LEVEL=info
-      - TZ=Europe/London
-      - PORT=5055
-    volumes:
-      - ${DATA_VOLUME_BASE_PATH}/media_services/overseerr/config:/app/config
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.overseerr.rule=Host(`${OVERSEERR_HOSTNAME}`)
-      - traefik.http.routers.overseerr.entrypoints=websecure
-      - traefik.http.routers.overseerr.tls.certresolver=myresolver
-      - traefik.frontend.headers.forceSTSHeader=true
-      - traefik.frontend.headers.STSSeconds=31536000
-    depends_on:
-      - radarr
-      - sonarr
-
-
   # updates your no ip DNS. Useful when you want to use a CNAME for your actual DNS server records... E.g. sub.domain.com -> CNAME -> my.dynamic.noip.com
   ddns-updater:
     image: qmcgaw/ddns-updater
