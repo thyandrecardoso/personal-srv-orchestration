@@ -403,5 +403,6 @@ services:
       - PUID=1000
       - PGID=1000
       - APP_KEY=${SPEEDTEST_APP_KEY}
+      - SPEEDTEST_SCHEDULE="0 */2 * * *"
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/speedtest/config:/config
