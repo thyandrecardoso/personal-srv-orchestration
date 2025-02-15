@@ -55,14 +55,18 @@ radarr:
 
     custom_formats:
       - trash_ids:
+          - b8cd450cbfa689c0259a01d9e29ba3d6 # 3D [Unwanted]
+          - cae4ca30163749b891686f95532519bd # AV1 [Unwanted]
+          - ed38b889b31be83fda192888e2286d83 # BR-DISK [Unwanted]
+          - 0a3f082873eb454bde444150b70253cc # Extras [Unwanted]
+          - e6886871085226c3da1830830146846c # Generated Dynamic HDR [Unwanted]
+          - 90a6f9a284dff5103f6346090e6280c8 # LQ [Unwanted]
+          - e204b80c87be9497a8a6eaff48f72905 # LQ (Release Title) [Unwanted]
+          - 712d74cd88bceb883ee32f773656b1f5 # Sing-Along Versions [Unwanted]
+          - bfd8eb01832d646a0a89c4deb46f8564 # Upscaled [Unwanted]
+          - dc98083864ea246d05a42df0d05f81cc # x265 (HD) [Unwanted]
+          - d6e9318c875905d6cfb5bee961afcea9 # Language: Not Original (Original Only)
           - 90cedc1fea7ea5d11298bebd3d1d3223 # EVO (no WEBDL)
-          - ed38b889b31be83fda192888e2286d83 # BR-DISK
-          - 90a6f9a284dff5103f6346090e6280c8 # LQ
-          - e204b80c87be9497a8a6eaff48f72905 # LQ (Release Title)
-          - b8cd450cbfa689c0259a01d9e29ba3d6 # 3D
-          - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
-          - bfd8eb01832d646a0a89c4deb46f8564 # Upscaled
-          - 0a3f082873eb454bde444150b70253cc # Extras
           - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
           - 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
           - 3a3ff47579026e76d6504ebea39390de # Remux Tier 01
@@ -74,7 +78,6 @@ radarr:
           - 0f12c086e289cf966fa5948eac571f44 # Hybrid
           - 570bc9ebecd92723d2d21500f4be314c # Remaster
           - 957d0f44b592285f26449575e8b1167e # Special Edition
-          - b17886cb4158d9fea189859409975758 # HDR10+ Boost
           - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
           - b17886cb4158d9fea189859409975758 # HDR10+ Boost
 
