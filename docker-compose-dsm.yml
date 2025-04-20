@@ -27,7 +27,7 @@ services:
   # maintenance processes that must be run regularly in order for Nextcloud to run properly
   # same image used for the actual nextcloud service below
   nextcloud-cron:
-    image: nextcloud:28-fpm-alpine
+    image: nextcloud:31-fpm-alpine
     container_name: nextcloud-cron
     restart: unless-stopped
     volumes:
@@ -50,7 +50,7 @@ services:
   # a Dropbox alternative, self-hosted
   # example for adding missing indices after update: `docker exec --user www-data nextcloud php occ db:add-missing-indices`
   nextcloud:
-    image: nextcloud:28-fpm-alpine
+    image: nextcloud:31-fpm-alpine
     container_name: nextcloud
     restart: unless-stopped
     volumes:
@@ -228,6 +228,61 @@ services:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
+
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/readarr/config:/config
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA
+    expose:
+      - 8787
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.prowlarr.rule=Host(`${READARR_HOST}`)
+      - traefik.http.routers.prowlarr.entrypoints=websecure
+      - traefik.http.routers.prowlarr.tls.certresolver=myresolver
+
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/calibre/config:/config
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/books:/books
+    ports:
+      - 8080:8080
+      - 8181:8181
+      - 8081:8081
+
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    restart: unless-stopped
+    container_name: calibre-web
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - DOCKER_MODS=linuxserver/mods:universal-calibre
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/calibre-web/config:/config
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/books:/books
+    expose:
+      - 8083
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.prowlarr.rule=Host(`${CALIBRE_WEB_HOST}`)
+      - traefik.http.routers.prowlarr.entrypoints=websecure
+      - traefik.http.routers.prowlarr.tls.certresolver=myresolver
 
   # like jackett, an indexer manager but it connects via API to radarr and sonarr in order so sync the indexers
   prowlarr:
