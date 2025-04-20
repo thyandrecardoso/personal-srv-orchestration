@@ -237,6 +237,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/London
+    depends_on:
+      - transmission
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/readarr/config:/config
       - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA
@@ -260,7 +262,7 @@ services:
       - ${DATA_VOLUME_BASE_PATH}/media_services/calibre/config:/config
       - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/books:/books
     ports:
-      - 8080:8080
+      - 8282:8080
       - 8181:8181
       - 8081:8081
 
