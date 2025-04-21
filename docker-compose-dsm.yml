@@ -246,9 +246,9 @@ services:
       - 8787
     labels:
       - traefik.enable=true
-      - traefik.http.routers.prowlarr.rule=Host(`${READARR_HOST}`)
-      - traefik.http.routers.prowlarr.entrypoints=websecure
-      - traefik.http.routers.prowlarr.tls.certresolver=myresolver
+      - traefik.http.routers.readarr.rule=Host(`${READARR_HOST}`)
+      - traefik.http.routers.readarr.entrypoints=websecure
+      - traefik.http.routers.readarr.tls.certresolver=myresolver
 
   calibre:
     image: lscr.io/linuxserver/calibre:latest
@@ -282,9 +282,9 @@ services:
       - 8083
     labels:
       - traefik.enable=true
-      - traefik.http.routers.prowlarr.rule=Host(`${CALIBRE_WEB_HOST}`)
-      - traefik.http.routers.prowlarr.entrypoints=websecure
-      - traefik.http.routers.prowlarr.tls.certresolver=myresolver
+      - traefik.http.routers.calibre-web.rule=Host(`${CALIBRE_WEB_HOST}`)
+      - traefik.http.routers.calibre-web.entrypoints=websecure
+      - traefik.http.routers.calibre-web.tls.certresolver=myresolver
 
   # like jackett, an indexer manager but it connects via API to radarr and sonarr in order so sync the indexers
   prowlarr:
