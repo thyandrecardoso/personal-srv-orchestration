@@ -261,7 +261,7 @@ services:
       - TZ=Etc/UTC
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/calibre/config:/config
-      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/books:/books
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/calibre_books:/books
     ports:
       - 8282:8080
       - 8181:8181
@@ -280,7 +280,7 @@ services:
       - calibre
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/calibre-web/config:/config
-      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/books:/books
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/calibre_books:/books
     expose:
       - 8083
     labels:
