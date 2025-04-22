@@ -262,6 +262,7 @@ services:
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/calibre/config:/config
       - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/calibre_books:/books
+      - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/books_staging:/books_staging
     ports:
       - 8282:8080
       - 8181:8181
