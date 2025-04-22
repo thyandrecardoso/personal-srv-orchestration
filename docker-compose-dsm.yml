@@ -239,6 +239,7 @@ services:
       - TZ=Europe/London
     depends_on:
       - transmission
+      - calibre
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/readarr/config:/config
       - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA:/MEDIA
@@ -275,6 +276,8 @@ services:
       - PGID=1000
       - TZ=Europe/London
       - DOCKER_MODS=linuxserver/mods:universal-calibre
+    depends_on:
+      - calibre
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/media_services/calibre-web/config:/config
       - ${DATA_VOLUME_BASE_PATH}/media_services/MEDIA/books:/books
