@@ -387,6 +387,36 @@ services:
       - radarr
       - sonarr
 
+  cleanuparr:
+    image: ghcr.io/cleanuparr/cleanuparr:latest
+    container_name: cleanuparr
+    restart: unless-stopped
+    expose:
+      - 11011
+    volumes:
+      - ${DATA_VOLUME_BASE_PATH}/media_services/cleanuparr/config:/config
+    environment:
+      - PORT=11011
+      - BASE_PATH=
+      - PUID=1000
+      - PGID=1000
+      - UMASK=022
+      - TZ=Etc/UTC
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cleanuparr.rule=Host(`${CLEANUPARR_HOSTNAME}`)
+      - traefik.http.routers.cleanuparr.entrypoints=websecure
+      - traefik.http.routers.cleanuparr.tls.certresolver=myresolver
+      - traefik.frontend.headers.forceSTSHeader=true
+      - traefik.frontend.headers.STSSeconds=31536000
+    # Health check configuration
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:11011/health" ]
+      interval: 60s        # Check every 30 seconds
+      timeout: 10s         # Allow up to 10 seconds for response
+      start_period: 60s    # Wait 30 seconds before first check
+      retries: 3           # Mark unhealthy after 3 consecutive failures
+
   # updates your no ip DNS. Useful when you want to use a CNAME for your actual DNS server records... E.g. sub.domain.com -> CNAME -> my.dynamic.noip.com
   ddns-updater:
     image: qmcgaw/ddns-updater
