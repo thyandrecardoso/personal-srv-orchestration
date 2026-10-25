@@ -409,3 +409,56 @@ services:
       - SPEEDTEST_SCHEDULE="0 */2 * * *"
     volumes:
       - ${DATA_VOLUME_BASE_PATH}/speedtest/config:/config
+
+
+  # Redirect LAN HTTPS traffic to Traefik.
+  lan-443:
+    image: alpine:3.22
+    container_name: lan-443
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    stop_grace_period: 15s
+
+    volumes:
+      - type: bind
+        source: /run/xtables.lock
+        target: /run/xtables.lock
+        bind:
+          create_host_path: false
+
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        apk add --no-cache iptables iptables-legacy
+        
+        rule() {
+          iptables-legacy -w -t nat "$$@" \
+            -i bond0 \
+            -s 192.168.1.0/24 \
+            -d 192.168.1.200/32 \
+            -p tcp --dport 443 \
+            -j REDIRECT --to-ports 4443
+        }
+        
+        cleanup() {
+          if rule -C PREROUTING >/dev/null 2>&1; then
+            rule -D PREROUTING || true
+            echo "lan-443: NAT rule removed"
+          fi
+        }
+        
+        trap 'exit 0' TERM INT
+        trap cleanup EXIT
+        
+        while :; do
+          if ! rule -C PREROUTING >/dev/null 2>&1; then
+            rule -I PREROUTING 1
+            echo "lan-443: NAT rule installed"
+          fi
+        
+          sleep 60 &
+          wait
+        done
